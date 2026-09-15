@@ -114,5 +114,58 @@ namespace ProcMaster
                 }
             }
         }
+
+        private void OnRunNewTask_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("explorer.exe") { UseShellExecute = true });
+            }
+            catch { }
+        }
+
+        private void OnSpeedHigh_Click(object sender, RoutedEventArgs e) => _vm.SetRefreshInterval(0.5);
+        private void OnSpeedNormal_Click(object sender, RoutedEventArgs e) => _vm.SetRefreshInterval(1.0);
+        private void OnSpeedLow_Click(object sender, RoutedEventArgs e) => _vm.SetRefreshInterval(2.0);
+        private void OnSpeedPaused_Click(object sender, RoutedEventArgs e) => _vm.SetRefreshInterval(0);
+
+        private void OnRestartAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var exePath = Environment.ProcessPath ?? Environment.GetCommandLineArgs()[0];
+                var psi = new ProcessStartInfo(exePath)
+                {
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+                Process.Start(psi);
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not elevate: {ex.Message}", "Elevation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void OnGitHub_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo("https://github.com/techselect/ProcMaster") { UseShellExecute = true });
+            }
+            catch { }
+        }
+
+        private void OnAbout_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ProcMaster v1.0.0\n\nAdvanced Windows Process Explorer & Task Manager Hybrid.\nBuilt in C# (.NET 10) & WPF.\nDedicated to the public domain under The Unlicense.",
+                "About ProcMaster", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void OnExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

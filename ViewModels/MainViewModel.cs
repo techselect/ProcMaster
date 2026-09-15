@@ -62,6 +62,22 @@ namespace ProcMaster.ViewModels
             _ = RefreshAsync();
         }
 
+        /// <summary>Updates the telemetry refresh interval (seconds <= 0 pauses timer).</summary>
+        public void SetRefreshInterval(double seconds)
+        {
+            if (seconds <= 0)
+            {
+                _refreshTimer.Stop();
+                StatusText = "Telemetry Refresh: Paused";
+            }
+            else
+            {
+                _refreshTimer.Interval = TimeSpan.FromSeconds(seconds);
+                if (!_refreshTimer.IsEnabled) _refreshTimer.Start();
+                StatusText = $"Telemetry Refresh: {seconds:F1}s";
+            }
+        }
+
         /// <summary>Currently selected process item in the TreeView or process list.</summary>
         public ProcessItem? SelectedProcess
         {

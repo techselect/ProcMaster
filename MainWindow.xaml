@@ -161,8 +161,27 @@
 
                 <!-- Left: Hamburger Menu + Neon Cyan Icon + ProcMaster -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <!-- Hamburger Icon -->
-                    <TextBlock Text="☰" FontSize="16" Foreground="#888888" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand"/>
+                    <!-- Hamburger Menu Button -->
+                    <Menu Background="Transparent" Margin="0,0,10,0" VerticalAlignment="Center">
+                        <MenuItem Header="☰" FontSize="16" Foreground="#B0B0B0" Background="Transparent" BorderThickness="0" Padding="4,2" Cursor="Hand" ToolTip="Application Menu">
+                            <MenuItem Header="📁 Run New Task..." Click="OnRunNewTask_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            <Separator Background="#333333"/>
+                            <MenuItem Header="🔄 Refresh Now (F5)" Click="OnRefresh_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            <MenuItem Header="⏱ Update Speed" Background="#222222" Foreground="#E0E0E0">
+                                <MenuItem Header="High (0.5 sec)" Click="OnSpeedHigh_Click" Background="#222222" Foreground="#E0E0E0"/>
+                                <MenuItem Header="Normal (1.0 sec)" Click="OnSpeedNormal_Click" Background="#222222" Foreground="#E0E0E0"/>
+                                <MenuItem Header="Low (2.0 sec)" Click="OnSpeedLow_Click" Background="#222222" Foreground="#E0E0E0"/>
+                                <MenuItem Header="Paused" Click="OnSpeedPaused_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            </MenuItem>
+                            <Separator Background="#333333"/>
+                            <MenuItem Header="🛡️ Restart as Administrator" Click="OnRestartAdmin_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            <Separator Background="#333333"/>
+                            <MenuItem Header="🌐 View on GitHub" Click="OnGitHub_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            <MenuItem Header="ℹ️ About ProcMaster" Click="OnAbout_Click" Background="#222222" Foreground="#E0E0E0"/>
+                            <Separator Background="#333333"/>
+                            <MenuItem Header="❌ Exit" Click="OnExit_Click" Background="#222222" Foreground="#E0E0E0"/>
+                        </MenuItem>
+                    </Menu>
 
                     <!-- Glowing Cyan Process Tree Glyph matching screenshot icon -->
                     <Border Width="24" Height="24" Background="#142C2C" BorderBrush="#00E5FF" BorderThickness="1.5" CornerRadius="4" Margin="0,0,8,0">
