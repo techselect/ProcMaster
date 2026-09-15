@@ -17,6 +17,10 @@
 
 ## 🌟 Overview
 
+<div align="center">
+  <img src="screenshot.png" alt="ProcMaster Screenshot" width="850" />
+</div>
+
 **ProcMaster** combines the interactive process hierarchy and deep inspection capabilities of Microsoft Sysinternals **Process Explorer** with the high-level agility of the Windows **Task Manager**.
 
 Written entirely in modern C# (.NET 10) with Windows Presentation Foundation (WPF) and low-level native Win32/NT kernel APIs (`ntdll.dll`, `kernel32.dll`, `psapi.dll`), ProcMaster delivers responsive, sub-millisecond telemetry and deep process inspection without consuming unnecessary system resources.
