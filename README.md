@@ -7,7 +7,7 @@
 **An advanced Windows Process Explorer & Task Manager hybrid built in C# (.NET 10) & WPF.**
 
 [![Build & Release](https://github.com/username/ProcMaster/actions/workflows/build.yml/badge.svg)](https://github.com/username/ProcMaster/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: Unlicense](https://img.shields.io/badge/License-Unlicense-blue.svg)](http://unlicense.org/)
 [![Target: .NET 10](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6.svg)](https://www.microsoft.com/windows)
 
@@ -138,5 +138,5 @@ git push -u origin main
 ---
 
 ## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+ 
+This project is dedicated to the public domain under **[The Unlicense](LICENSE)**. You are completely free to use, copy, modify, distribute, sell, or do whatever you wish with it without restriction or attribution requirements.
