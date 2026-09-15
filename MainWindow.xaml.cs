@@ -20,6 +20,17 @@ namespace ProcMaster
         public MainWindow()
         {
             InitializeComponent();
+
+            try
+            {
+                string iconPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app_icon.png");
+                if (System.IO.File.Exists(iconPath))
+                {
+                    Icon = new System.Windows.Media.Imaging.BitmapImage(new Uri(iconPath, UriKind.Absolute));
+                }
+            }
+            catch { }
+
             _vm = new MainViewModel();
             DataContext = _vm;
         }
