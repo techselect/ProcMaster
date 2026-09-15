@@ -28,11 +28,11 @@ namespace ProcMaster.Services
         private readonly ConcurrentDictionary<string, ImageSource?> _iconCache = new();
         private readonly int _processorCount = Environment.ProcessorCount;
 
-        /// <summary>Color brush applied to newly detected processes (Green).</summary>
-        public static readonly SolidColorBrush NewProcessBrush = new(System.Windows.Media.Color.FromArgb(120, 76, 175, 80));
+        /// <summary>Color brush applied to newly detected processes (soft modern green tint matching screenshot).</summary>
+        public static readonly SolidColorBrush NewProcessBrush = new(System.Windows.Media.Color.FromArgb(90, 46, 125, 50));
 
-        /// <summary>Color brush applied to terminating processes before removal (Red).</summary>
-        public static readonly SolidColorBrush ExitingProcessBrush = new(System.Windows.Media.Color.FromArgb(120, 244, 67, 54));
+        /// <summary>Color brush applied to terminating processes before removal (soft red tint).</summary>
+        public static readonly SolidColorBrush ExitingProcessBrush = new(System.Windows.Media.Color.FromArgb(90, 198, 40, 40));
 
         /// <summary>Standard transparent background brush for stable processes.</summary>
         public static readonly SolidColorBrush NormalBrush = System.Windows.Media.Brushes.Transparent;

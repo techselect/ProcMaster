@@ -8,57 +8,130 @@
         xmlns:vm="clr-namespace:ProcMaster.ViewModels"
         xmlns:conv="clr-namespace:ProcMaster.Converters"
         mc:Ignorable="d"
-        Title="ProcMaster - Process Explorer &amp; Task Manager" Height="800" Width="1200"
-        Background="#1E1E1E" Foreground="#CCCCCC"
-        WindowStartupLocation="CenterScreen">
+        Title="ProcMaster" Height="780" Width="1240"
+        Background="#191919" Foreground="#E0E0E0"
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI Variable Display, Segoe UI, sans-serif"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
 
     <Window.Resources>
         <conv:CpuColorConverter x:Key="CpuColorConverter" />
+        <conv:CpuSparklineConverter x:Key="CpuSparklineConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
 
-        <!-- Dark Theme Styles -->
+        <!-- Modern Dark ScrollBar Style -->
+        <Style TargetType="{x:Type ScrollBar}">
+            <Setter Property="Background" Value="#181818"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+        </Style>
+
+        <!-- Base TextBlock -->
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="#CCCCCC"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
+        <!-- Modern Dark DataGrid -->
         <Style TargetType="DataGrid">
-            <Setter Property="Background" Value="#252526"/>
-            <Setter Property="Foreground" Value="#DCDCDC"/>
+            <Setter Property="Background" Value="#1C1C1C"/>
+            <Setter Property="Foreground" Value="#E0E0E0"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
-            <Setter Property="HorizontalGridLinesBrush" Value="#333333"/>
-            <Setter Property="RowBackground" Value="#252526"/>
-            <Setter Property="AlternatingRowBackground" Value="#2D2D30"/>
-            <Setter Property="BorderBrush" Value="#3E3E42"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#2A2A2A"/>
+            <Setter Property="RowBackground" Value="#1C1C1C"/>
+            <Setter Property="AlternatingRowBackground" Value="#202020"/>
+            <Setter Property="BorderBrush" Value="#2A2A2A"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="AutoGenerateColumns" Value="False"/>
             <Setter Property="IsReadOnly" Value="True"/>
             <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="RowHeight" Value="24"/>
+            <Setter Property="FontSize" Value="12"/>
         </Style>
 
+        <!-- DataGrid Column Header -->
         <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#333337"/>
-            <Setter Property="Foreground" Value="#E0E0E0"/>
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="BorderBrush" Value="#434346"/>
+            <Setter Property="Background" Value="#212121"/>
+            <Setter Property="Foreground" Value="#9E9E9E"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="BorderBrush" Value="#2B2B2B"/>
             <Setter Property="BorderThickness" Value="0,0,1,1"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="FontSize" Value="12"/>
         </Style>
 
-        <Style TargetType="TabItem">
-            <Setter Property="Background" Value="#2D2D30"/>
-            <Setter Property="Foreground" Value="#CCCCCC"/>
-            <Setter Property="Padding" Value="12,5"/>
+        <!-- Lower Pane Modern TabItem Style (Matching Screenshot) -->
+        <Style x:Key="LowerTabItemStyle" TargetType="TabItem">
+            <Setter Property="Foreground" Value="#8E8E8E"/>
+            <Setter Property="FontSize" Value="12.5"/>
+            <Setter Property="Padding" Value="14,6"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TabItem">
-                        <Border Name="Border" Background="{TemplateBinding Background}" BorderBrush="#3E3E42" BorderThickness="1,1,1,0" CornerRadius="3,3,0,0" Margin="2,0">
-                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="8,4"/>
+                        <Border Name="TabBorder" Background="Transparent" CornerRadius="4" Margin="2,3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter x:Name="TabContent" ContentSource="Header" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter TargetName="Border" Property="Background" Value="#1E1E1E"/>
-                                <Setter Property="Foreground" Value="#007ACC"/>
+                                <Setter TargetName="TabBorder" Property="Background" Value="#262626"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#E0E0E0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Top Header Navigation Tab Button Style -->
+        <Style x:Key="TopNavButtonStyle" TargetType="RadioButton">
+            <Setter Property="Foreground" Value="#8A8A8A"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Padding" Value="16,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#282828"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Action Button Style in Top Bar -->
+        <Style x:Key="HeaderActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#262626"/>
+            <Setter Property="Foreground" Value="#D0D0D0"/>
+            <Setter Property="BorderBrush" Value="#353535"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#333333"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,85 +140,122 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="#161616">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Toolbar & Search -->
-            <RowDefinition Height="3*"/>   <!-- Process List / Tree -->
-            <RowDefinition Height="5"/>    <!-- Grid Splitter -->
-            <RowDefinition Height="2*"/>   <!-- Lower Pane (Handles, DLLs, Threads) -->
-            <RowDefinition Height="Auto"/> <!-- Status Bar -->
+            <RowDefinition Height="Auto"/> <!-- Modern Title/App Bar -->
+            <RowDefinition Height="Auto"/> <!-- Quick Action Subbar -->
+            <RowDefinition Height="3*"/>   <!-- Process Hierarchy Tree -->
+            <RowDefinition Height="4"/>    <!-- Sleek Splitter -->
+            <RowDefinition Height="2*"/>   <!-- Lower Inspection Pane -->
+            <RowDefinition Height="Auto"/> <!-- Modern Footer Bar -->
         </Grid.RowDefinitions>
 
-        <!-- Top Action & Search Bar -->
-        <Border Grid.Row="0" Background="#2D2D30" Padding="8,6" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
+        <!-- 1. Sleek Modern App & Title Bar (matching screenshot top bar) -->
+        <Border Grid.Row="0" Background="#1D1D1D" BorderBrush="#262626" BorderThickness="0,0,0,1" Padding="14,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/> <!-- Menu Hamburger + Icon + ProcMaster Title -->
+                    <ColumnDefinition Width="*"/>    <!-- Centered Nav (Processes, Performance, Services) -->
+                    <ColumnDefinition Width="Auto"/> <!-- Search Box -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Hamburger Menu + Neon Cyan Icon + ProcMaster -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Hamburger Icon -->
+                    <TextBlock Text="☰" FontSize="16" Foreground="#888888" Margin="0,0,12,0" VerticalAlignment="Center" Cursor="Hand"/>
+
+                    <!-- Glowing Cyan Process Tree Glyph matching screenshot icon -->
+                    <Border Width="24" Height="24" Background="#142C2C" BorderBrush="#00E5FF" BorderThickness="1.5" CornerRadius="4" Margin="0,0,8,0">
+                        <Path Data="M 6,6 H 12 V 10 H 6 Z M 12,8 H 18 V 16 H 14 M 18,12 H 20" Stroke="#00E5FF" StrokeThickness="1.5" Fill="Transparent" Stretch="Uniform" Margin="3"/>
+                    </Border>
+
+                    <!-- Title -->
+                    <TextBlock Text="ProcMaster" FontSize="15" FontWeight="SemiBold" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Center: Segmented Navigation (Processes, Performance, Services) -->
+                <Border Grid.Column="1" HorizontalAlignment="Center" Background="#151515" BorderBrush="#252525" BorderThickness="1" CornerRadius="5" Padding="2">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="Processes" IsChecked="True" Style="{StaticResource TopNavButtonStyle}"/>
+                        <RadioButton Content="Performance" Style="{StaticResource TopNavButtonStyle}"/>
+                        <RadioButton Content="Services" Style="{StaticResource TopNavButtonStyle}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Right: Clean Search Filter Box -->
+                <Border Grid.Column="2" Background="#161616" BorderBrush="#303030" BorderThickness="1" CornerRadius="4" Padding="6,3" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔍" FontSize="10" Foreground="#707070" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="160" Background="Transparent" Foreground="#FFFFFF" BorderThickness="0" FontSize="11" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 2. Action Controls Subbar -->
+        <Border Grid.Row="1" Background="#1A1A1A" BorderBrush="#242424" BorderThickness="0,0,0,1" Padding="12,4">
             <DockPanel LastChildFill="True">
-                <!-- Action Buttons -->
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,15,0">
-                    <Button Content="⚡ Kill Process" Click="OnKillProcess_Click" Margin="0,0,5,0" Padding="10,4" Background="#C62828" Foreground="White" BorderThickness="0" FontWeight="Bold"/>
-                    <Button Content="🌳 Kill Process Tree" Click="OnKillTree_Click" Margin="0,0,5,0" Padding="10,4" Background="#8E0000" Foreground="White" BorderThickness="0"/>
-                    <Button Content="⏸ Suspend" Click="OnSuspend_Click" Margin="0,0,5,0" Padding="8,4" Background="#455A64" Foreground="White" BorderThickness="0"/>
-                    <Button Content="▶ Resume" Click="OnResume_Click" Margin="0,0,5,0" Padding="8,4" Background="#2E7D32" Foreground="White" BorderThickness="0"/>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <Button Content="Kill Process" Click="OnKillProcess_Click" Style="{StaticResource HeaderActionButton}" Margin="0,0,4,0" Foreground="#FF6B6B"/>
+                    <Button Content="Kill Tree" Click="OnKillTree_Click" Style="{StaticResource HeaderActionButton}" Margin="0,0,4,0" Foreground="#E57373"/>
+                    <Button Content="Suspend" Click="OnSuspend_Click" Style="{StaticResource HeaderActionButton}" Margin="0,0,4,0"/>
+                    <Button Content="Resume" Click="OnResume_Click" Style="{StaticResource HeaderActionButton}" Margin="0,0,6,0" Foreground="#81C784"/>
                     
-                    <Menu Background="Transparent" VerticalAlignment="Center" Margin="5,0">
-                        <MenuItem Header="⚙ Set Priority" Background="#3E3E42" Foreground="White">
-                            <MenuItem Header="Realtime" Click="OnPriorityRealtime_Click"/>
-                            <MenuItem Header="High" Click="OnPriorityHigh_Click"/>
-                            <MenuItem Header="Above Normal" Click="OnPriorityAboveNormal_Click"/>
-                            <MenuItem Header="Normal" Click="OnPriorityNormal_Click"/>
-                            <MenuItem Header="Below Normal" Click="OnPriorityBelowNormal_Click"/>
-                            <MenuItem Header="Idle" Click="OnPriorityIdle_Click"/>
+                    <Menu Background="Transparent" VerticalAlignment="Center">
+                        <MenuItem Header="Priority ▾" Background="#262626" Foreground="#CCCCCC" Padding="8,4" FontSize="11" BorderBrush="#353535" BorderThickness="1">
+                            <MenuItem Header="Realtime" Click="OnPriorityRealtime_Click" Background="#222" Foreground="#FFF"/>
+                            <MenuItem Header="High" Click="OnPriorityHigh_Click" Background="#222" Foreground="#FFF"/>
+                            <MenuItem Header="Above Normal" Click="OnPriorityAboveNormal_Click" Background="#222" Foreground="#FFF"/>
+                            <MenuItem Header="Normal" Click="OnPriorityNormal_Click" Background="#222" Foreground="#FFF"/>
+                            <MenuItem Header="Below Normal" Click="OnPriorityBelowNormal_Click" Background="#222" Foreground="#FFF"/>
+                            <MenuItem Header="Idle" Click="OnPriorityIdle_Click" Background="#222" Foreground="#FFF"/>
                         </MenuItem>
                     </Menu>
 
-                    <Button Content="🔄 Refresh Now" Click="OnRefresh_Click" Margin="5,0,0,0" Padding="8,4" Background="#333337" Foreground="#DDD" BorderBrush="#555"/>
+                    <Button Content="🔄 Refresh" Click="OnRefresh_Click" Style="{StaticResource HeaderActionButton}" Margin="6,0,0,0"/>
                 </StackPanel>
 
-                <!-- Search box -->
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                    <TextBlock Text="🔍 Filter: " VerticalAlignment="Center" Margin="0,0,5,0" Foreground="#AAA"/>
-                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200" Padding="4,2" Background="#1E1E1E" Foreground="White" BorderBrush="#555"/>
-                </StackPanel>
+                <!-- Status indicator -->
+                <TextBlock DockPanel.Dock="Right" Text="{Binding StatusText}" Foreground="#666666" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             </DockPanel>
         </Border>
 
-        <!-- Process Tree Area -->
-        <Grid Grid.Row="1">
+        <!-- 3. Process Tree Area (Exact Column Alignments from Screenshot) -->
+        <Grid Grid.Row="2" Background="#181818">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/> <!-- Column Headers -->
-                <RowDefinition Height="*"/>    <!-- Virtualized TreeView -->
+                <RowDefinition Height="Auto"/> <!-- Column Header Bar -->
+                <RowDefinition Height="*"/>    <!-- Process Items -->
             </Grid.RowDefinitions>
 
-            <!-- Column Header Bar matching Process Explorer / Task Manager -->
-            <Border Grid.Row="0" Background="#2D2D30" BorderBrush="#3E3E42" BorderThickness="0,0,0,1" Padding="6,4">
+            <!-- Column Header Bar matching Screenshot -->
+            <Border Grid.Row="0" Background="#1E1E1E" BorderBrush="#282828" BorderThickness="0,0,0,1" Padding="8,5">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="280"/> <!-- Process -->
-                        <ColumnDefinition Width="70"/>  <!-- PID -->
-                        <ColumnDefinition Width="80"/>  <!-- CPU -->
-                        <ColumnDefinition Width="100"/> <!-- Private Bytes -->
-                        <ColumnDefinition Width="100"/> <!-- Working Set -->
+                        <ColumnDefinition Width="260"/> <!-- Process Name -->
+                        <ColumnDefinition Width="65"/>  <!-- PID -->
+                        <ColumnDefinition Width="95"/>  <!-- CPU % with sparkline -->
+                        <ColumnDefinition Width="140"/> <!-- Memory Private Bytes -->
+                        <ColumnDefinition Width="105"/> <!-- Working Set -->
+                        <ColumnDefinition Width="70"/>  <!-- Handles -->
                         <ColumnDefinition Width="70"/>  <!-- Threads -->
-                        <ColumnDefinition Width="80"/>  <!-- Handles -->
-                        <ColumnDefinition Width="100"/> <!-- Architecture -->
                         <ColumnDefinition Width="*"/>   <!-- Description -->
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Process" FontWeight="Bold" Foreground="#85B6FF"/>
-                    <TextBlock Grid.Column="1" Text="PID" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="2" Text="CPU" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="3" Text="Private Bytes" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="4" Text="Working Set" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="5" Text="Threads" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="6" Text="Handles" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="7" Text="Arch" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#AAA"/>
-                    <TextBlock Grid.Column="8" Text="Description" FontWeight="Bold" Margin="10,0,0,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="0" Text="Process Name" FontSize="11.5" Foreground="#A0A0A0" Margin="4,0,0,0"/>
+                    <TextBlock Grid.Column="1" Text="PID" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Column="2" Text="CPU %" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Column="3" Text="Memory Private Bytes" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <TextBlock Grid.Column="4" Text="Working Set" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <TextBlock Grid.Column="5" Text="Handles" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <TextBlock Grid.Column="6" Text="Threads" FontSize="11.5" Foreground="#A0A0A0" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <TextBlock Grid.Column="7" Text="Description" FontSize="11.5" Foreground="#A0A0A0" Margin="10,0,0,0"/>
                 </Grid>
             </Border>
 
-            <!-- TreeView (Process Explorer hierarchy) with UI Virtualization and Disabled Horizontal Scrollbar -->
+            <!-- Virtualized Process TreeView -->
             <TreeView Grid.Row="1"
                       ItemsSource="{Binding ProcessTree}" 
-                      Background="#1E1E1E" 
+                      Background="#181818" 
                       BorderThickness="0"
                       VirtualizingStackPanel.IsVirtualizing="True"
                       VirtualizingStackPanel.VirtualizationMode="Recycling"
@@ -160,79 +270,101 @@
                         <Setter Property="Background" Value="{Binding HighlightColor}" />
                         <Setter Property="BorderThickness" Value="0"/>
                         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                        <Setter Property="Padding" Value="2,1"/>
+                        <Setter Property="Padding" Value="0,1"/>
+                        <Setter Property="MinHeight" Value="24"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#094771"/>
-                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#253746"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#222A30"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </TreeView.ItemContainerStyle>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <Grid Margin="0,2" HorizontalAlignment="Stretch">
+                        <Grid Margin="0,1" HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="280"/> <!-- Name & Icon -->
-                                <ColumnDefinition Width="70"/>  <!-- PID -->
-                                <ColumnDefinition Width="80"/>  <!-- CPU -->
-                                <ColumnDefinition Width="100"/> <!-- Private Bytes -->
-                                <ColumnDefinition Width="100"/> <!-- Working Set -->
+                                <ColumnDefinition Width="260"/> <!-- Process Name & Icon -->
+                                <ColumnDefinition Width="65"/>  <!-- PID -->
+                                <ColumnDefinition Width="95"/>  <!-- CPU % with sparkline -->
+                                <ColumnDefinition Width="140"/> <!-- Memory Private Bytes -->
+                                <ColumnDefinition Width="105"/> <!-- Working Set -->
+                                <ColumnDefinition Width="70"/>  <!-- Handles -->
                                 <ColumnDefinition Width="70"/>  <!-- Threads -->
-                                <ColumnDefinition Width="80"/>  <!-- Handles -->
-                                <ColumnDefinition Width="100"/> <!-- Architecture -->
                                 <ColumnDefinition Width="*"/>   <!-- Description -->
                             </Grid.ColumnDefinitions>
 
-                            <StackPanel Orientation="Horizontal" Grid.Column="0">
-                                <Image Source="{Binding Icon}" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding ProcessName}" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#E0E0E0"/>
+                            <!-- Process Name & Icon -->
+                            <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Center">
+                                <Image Source="{Binding Icon}" Width="15" Height="15" Margin="0,0,6,0" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                <TextBlock Text="{Binding ProcessName}" FontSize="12" FontWeight="Normal" Foreground="#E4E4E4" VerticalAlignment="Center"/>
                             </StackPanel>
 
-                            <TextBlock Grid.Column="1" Text="{Binding ProcessId}" Foreground="#AAA" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Grid.Column="2" Text="{Binding CpuUsage, StringFormat={}{0:F1}%}" Foreground="{Binding CpuUsage, Converter={StaticResource CpuColorConverter}}" HorizontalAlignment="Right" Margin="0,0,10,0" FontWeight="Bold"/>
-                            <TextBlock Grid.Column="3" Text="{Binding PrivateBytesDisplay}" Foreground="#B0BEC5" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Grid.Column="4" Text="{Binding WorkingSetDisplay}" Foreground="#90A4AE" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Grid.Column="5" Text="{Binding ThreadCount}" Foreground="#AAA" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Grid.Column="6" Text="{Binding HandleCount}" Foreground="#AAA" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                            <TextBlock Grid.Column="7" Text="{Binding Architecture}" Foreground="#81C784" HorizontalAlignment="Center"/>
-                            <TextBlock Grid.Column="8" Text="{Binding Description}" Foreground="#888" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"/>
+                            <!-- PID -->
+                            <TextBlock Grid.Column="1" Text="{Binding ProcessId}" FontSize="11.5" Foreground="#999999" HorizontalAlignment="Right" Margin="0,0,8,0" VerticalAlignment="Center"/>
+
+                            <!-- CPU % with Teal Sparkline Curve matching screenshot -->
+                            <Grid Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,8,0" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="38"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Grid.Column="0" Data="{Binding CpuUsage, Converter={StaticResource CpuSparklineConverter}}" Stroke="#4DD0E1" StrokeThickness="1.2" Fill="Transparent" Width="36" Height="12" VerticalAlignment="Center" Opacity="0.8"/>
+                                <TextBlock Grid.Column="1" Text="{Binding CpuUsage, StringFormat={}{0:F1}}" FontSize="11.5" Foreground="{Binding CpuUsage, Converter={StaticResource CpuColorConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Memory Private Bytes -->
+                            <TextBlock Grid.Column="3" Text="{Binding PrivateBytesDisplay}" FontSize="11.5" Foreground="#CCCCCC" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                            <!-- Working Set -->
+                            <TextBlock Grid.Column="4" Text="{Binding WorkingSetDisplay}" FontSize="11.5" Foreground="#B0B0B0" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                            <!-- Handles -->
+                            <TextBlock Grid.Column="5" Text="{Binding HandleCount}" FontSize="11.5" Foreground="#999999" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                            <!-- Threads -->
+                            <TextBlock Grid.Column="6" Text="{Binding ThreadCount}" FontSize="11.5" Foreground="#999999" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+
+                            <!-- Description -->
+                            <TextBlock Grid.Column="7" Text="{Binding Description}" FontSize="11.5" Foreground="#858585" TextTrimming="CharacterEllipsis" Margin="10,0,0,0" VerticalAlignment="Center"/>
                         </Grid>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
         </Grid>
 
-        <!-- Splitter -->
-        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="#3E3E42" Cursor="SizeNS"/>
+        <!-- 4. Sleek Separator Splitter -->
+        <GridSplitter Grid.Row="3" Height="4" HorizontalAlignment="Stretch" Background="#262626" Cursor="SizeNS"/>
 
-        <!-- Lower Pane: Tabs for DLLs, Handles, Threads -->
-        <TabControl Grid.Row="3" Background="#1E1E1E" BorderBrush="#3E3E42">
-            <!-- Loaded Modules / DLLs -->
-            <TabItem Header="📦 Loaded Modules (DLLs)">
-                <DataGrid ItemsSource="{Binding Modules}">
+        <!-- 5. Lower Inspection Pane with Modern Floating Tabs -->
+        <TabControl Grid.Row="4" Background="#1C1C1C" BorderBrush="#252525" BorderThickness="0,1,0,0">
+            <!-- Loaded Modules -->
+            <TabItem Header="Loaded Modules" Style="{StaticResource LowerTabItemStyle}">
+                <DataGrid ItemsSource="{Binding Modules}" Margin="0">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Module Name" Binding="{Binding Name}" Width="180"/>
-                        <DataGridTextColumn Header="Base Address" Binding="{Binding BaseAddress}" Width="120"/>
-                        <DataGridTextColumn Header="Size" Binding="{Binding SizeDisplay}" Width="90"/>
-                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="220"/>
-                        <DataGridTextColumn Header="Company" Binding="{Binding Company}" Width="150"/>
+                        <DataGridTextColumn Header="Module Name" Binding="{Binding Name}" Width="190"/>
+                        <DataGridTextColumn Header="Base Address" Binding="{Binding BaseAddress}" Width="150"/>
                         <DataGridTextColumn Header="Path" Binding="{Binding FilePath}" Width="*"/>
+                        <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="130"/>
+                        <DataGridTextColumn Header="Size" Binding="{Binding SizeDisplay}" Width="90"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
 
             <!-- Handles -->
-            <TabItem Header="🔑 Open Handles">
-                <Grid>
+            <TabItem Header="Handles" Style="{StaticResource LowerTabItemStyle}">
+                <Grid Background="#1C1C1C">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#252526" Padding="5">
+                    <Border Grid.Row="0" Background="#202020" Padding="8,4" BorderBrush="#2A2A2A" BorderThickness="0,0,0,1">
                         <StackPanel Orientation="Horizontal">
-                            <Button Content="Close Handle" Click="OnCloseHandle_Click" Padding="8,2" Background="#D32F2F" Foreground="White" BorderThickness="0"/>
-                            <TextBlock Text="  (Caution: Closing system handles can cause process instability)" Foreground="#888"/>
+                            <Button Content="Close Handle" Click="OnCloseHandle_Click" Style="{StaticResource HeaderActionButton}" Foreground="#FF6B6B" Margin="0,0,10,0"/>
+                            <TextBlock Text="Caution: Closing system handles can cause process instability" Foreground="#707070" FontSize="11"/>
                         </StackPanel>
                     </Border>
                     <DataGrid Grid.Row="1" x:Name="HandlesGrid" ItemsSource="{Binding Handles}">
@@ -246,26 +378,26 @@
             </TabItem>
 
             <!-- Threads -->
-            <TabItem Header="🧵 Threads">
+            <TabItem Header="Threads" Style="{StaticResource LowerTabItemStyle}">
                 <DataGrid ItemsSource="{Binding Threads}">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Thread ID" Binding="{Binding ThreadId}" Width="100"/>
                         <DataGridTextColumn Header="State" Binding="{Binding State}" Width="120"/>
                         <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="90"/>
-                        <DataGridTextColumn Header="Start Time" Binding="{Binding StartTime}" Width="140"/>
+                        <DataGridTextColumn Header="Start Time" Binding="{Binding StartTime}" Width="150"/>
                         <DataGridTextColumn Header="CPU Time" Binding="{Binding CpuTime}" Width="120"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </TabItem>
 
-            <!-- Process Environment & Info -->
-            <TabItem Header="ℹ Process Properties">
-                <ScrollViewer Background="#252526" Padding="15">
-                    <StackPanel DataContext="{Binding SelectedProcess}">
-                        <TextBlock Text="Process Information" FontSize="16" FontWeight="Bold" Foreground="#4FC3F7" Margin="0,0,0,10"/>
+            <!-- Properties -->
+            <TabItem Header="Properties" Style="{StaticResource LowerTabItemStyle}">
+                <ScrollViewer Background="#1C1C1C" Padding="16">
+                    <StackPanel DataContext="{Binding SelectedProcess}" MaxWidth="900" HorizontalAlignment="Left">
+                        <TextBlock Text="Process Information" FontSize="14" FontWeight="SemiBold" Foreground="#FFFFFF" Margin="0,0,0,12"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="140"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -277,46 +409,44 @@
                                 <RowDefinition Height="26"/>
                             </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable Path:" FontWeight="SemiBold"/>
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ExecutablePath, Mode=OneWay}" IsReadOnly="True" Background="Transparent" Foreground="#DDD" BorderThickness="0"/>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="Executable Path:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding ExecutablePath, Mode=OneWay}" IsReadOnly="True" Background="Transparent" Foreground="#E0E0E0" BorderThickness="0" FontSize="11.5"/>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Command Line:" FontWeight="SemiBold"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CommandLine, Mode=OneWay}" IsReadOnly="True" Background="Transparent" Foreground="#DDD" BorderThickness="0"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="Command Line:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding CommandLine, Mode=OneWay}" IsReadOnly="True" Background="Transparent" Foreground="#E0E0E0" BorderThickness="0" FontSize="11.5"/>
 
-                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Company:" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CompanyName}" Foreground="#DDD"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="Company:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CompanyName}" Foreground="#E0E0E0" FontSize="11.5"/>
 
-                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Architecture:" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Architecture}" Foreground="#DDD"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="Architecture:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Architecture}" Foreground="#E0E0E0" FontSize="11.5"/>
 
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Start Time:" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding StartTime}" Foreground="#DDD"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Start Time:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding StartTime}" Foreground="#E0E0E0" FontSize="11.5"/>
 
-                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Base Priority:" FontWeight="SemiBold"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Priority}" Foreground="#DDD"/>
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="Base Priority:" Foreground="#888888" FontSize="11.5"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding Priority}" Foreground="#E0E0E0" FontSize="11.5"/>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
         </TabControl>
 
-        <!-- Status Bar -->
-        <StatusBar Grid.Row="4" Background="#007ACC" Foreground="White" Padding="6,3">
-            <StatusBarItem>
-                <TextBlock Text="{Binding StatusText}" Foreground="White" FontWeight="SemiBold"/>
-            </StatusBarItem>
-            <StatusBarItem HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="CPU: " Foreground="#DDD"/>
-                    <TextBlock Text="{Binding TotalCpuUsage, StringFormat={}{0:F1}%}" FontWeight="Bold" Margin="0,0,15,0"/>
-                    <TextBlock Text="Processes: " Foreground="#DDD"/>
-                    <TextBlock Text="{Binding TotalProcesses}" FontWeight="Bold" Margin="0,0,15,0"/>
-                    <TextBlock Text="Threads: " Foreground="#DDD"/>
-                    <TextBlock Text="{Binding TotalThreads}" FontWeight="Bold" Margin="0,0,15,0"/>
-                    <TextBlock Text="Handles: " Foreground="#DDD"/>
-                    <TextBlock Text="{Binding TotalHandles}" FontWeight="Bold"/>
+        <!-- 6. Bottom Status Bar (matching dark theme) -->
+        <Border Grid.Row="5" Background="#161616" BorderBrush="#242424" BorderThickness="0,1,0,0" Padding="12,5">
+            <DockPanel LastChildFill="True">
+                <TextBlock DockPanel.Dock="Left" Text="{Binding StatusText}" Foreground="#757575" FontSize="11"/>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="CPU: " Foreground="#757575" FontSize="11"/>
+                    <TextBlock Text="{Binding TotalCpuUsage, StringFormat={}{0:F1}%}" Foreground="#4DD0E1" FontWeight="SemiBold" FontSize="11" Margin="0,0,14,0"/>
+                    <TextBlock Text="Processes: " Foreground="#757575" FontSize="11"/>
+                    <TextBlock Text="{Binding TotalProcesses}" Foreground="#E0E0E0" FontWeight="SemiBold" FontSize="11" Margin="0,0,14,0"/>
+                    <TextBlock Text="Threads: " Foreground="#757575" FontSize="11"/>
+                    <TextBlock Text="{Binding TotalThreads}" Foreground="#E0E0E0" FontWeight="SemiBold" FontSize="11" Margin="0,0,14,0"/>
+                    <TextBlock Text="Handles: " Foreground="#757575" FontSize="11"/>
+                    <TextBlock Text="{Binding TotalHandles}" Foreground="#E0E0E0" FontWeight="SemiBold" FontSize="11"/>
                 </StackPanel>
-            </StatusBarItem>
-        </StatusBar>
+            </DockPanel>
+        </Border>
     </Grid>
 </Window>
