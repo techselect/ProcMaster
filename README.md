@@ -6,7 +6,7 @@
 
 **An advanced Windows Process Explorer & Task Manager hybrid built in C# (.NET 10) & WPF.**
 
-[![Build & Release](https://github.com/username/ProcMaster/actions/workflows/build.yml/badge.svg)](https://github.com/username/ProcMaster/actions)
+[![Release: v1.0.0](https://img.shields.io/github/v/release/techselect/ProcMaster?color=success)](https://github.com/techselect/ProcMaster/releases/latest)
 [![License: Unlicense](https://img.shields.io/badge/License-Unlicense-blue.svg)](http://unlicense.org/)
 [![Target: .NET 10](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 [![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6.svg)](https://www.microsoft.com/windows)
@@ -60,9 +60,6 @@ Written entirely in modern C# (.NET 10) with Windows Presentation Foundation (WP
 
 ```
 ProcMaster/
-├── .github/
-│   └── workflows/
-│       └── build.yml               # GitHub Actions CI/CD pipeline
 ├── Converters/
 │   └── ValueConverters.cs          # WPF color and indentation converters
 ├── Models/
@@ -79,7 +76,7 @@ ProcMaster/
 ├── MainWindow.xaml / cs            # Virtualized split UI with dark theme
 ├── app_icon.ico / app_icon.png     # Custom application branding icons
 ├── ProcMaster.csproj               # .NET 10 Windows SDK project file
-├── LICENSE                         # MIT License
+├── LICENSE                         # The Unlicense
 └── README.md                       # Project documentation
 ```
 
@@ -89,7 +86,7 @@ ProcMaster/
 
 ### Requirements
 - **Operating System**: Windows 10 (1809+), Windows 11, or Windows Server 2019+
-- **Runtime / SDK**: [.NET 10.0 SDK](https://dotnet.microsoft.com/)
+- **Runtime / SDK**: [.NET 10.0 SDK](https://dotnet.microsoft.com/) (only required if building from source)
 
 ---
 
@@ -97,7 +94,7 @@ ProcMaster/
 
 Clone the repository:
 ```bash
-git clone https://github.com/your-username/ProcMaster.git
+git clone https://github.com/techselect/ProcMaster.git
 cd ProcMaster
 ```
 
@@ -106,34 +103,22 @@ cd ProcMaster
 dotnet run
 ```
 
-### Publish Self-Contained / Release Build
+### Build Standalone Release
 ```powershell
-dotnet publish -c Release -r win-x64 --self-contained false -o bin/Publish
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o bin/ReleaseStandalone
 ```
 
 > **Note**: For full visibility into system processes and handles (such as `csrss.exe`, `lsass.exe`, or services), launch ProcMaster as **Administrator**.
 
 ---
 
-## 🚢 Pushing to GitHub
+## 📦 Downloads & Releases
 
-To push this repository to your GitHub account:
+Pre-compiled standalone Windows executables and portable archives are available on the [Releases](https://github.com/techselect/ProcMaster/releases) page.
 
-1. Create a new empty repository on [GitHub](https://github.com/new) (e.g. named `ProcMaster`).
-2. Run the following commands in your PowerShell / terminal:
-
-```powershell
-cd ProcMaster
-
-# Link your GitHub repository
-git remote add origin https://github.com/<YOUR_GITHUB_USERNAME>/ProcMaster.git
-
-# Set default branch to main (or keep master)
-git branch -M main
-
-# Push all commits and tags
-git push -u origin main
-```
+- **[Latest Release (v1.0.0)](https://github.com/techselect/ProcMaster/releases/latest)**
+- **Portable ZIP**: `ProcMaster-v1.0.0-win-x64.zip`
+- **Standalone Binary**: `ProcMaster.exe` (No .NET installation required)
 
 ---
 
