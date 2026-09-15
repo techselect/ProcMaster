@@ -1,0 +1,36 @@
+name: Build & Release ProcMaster
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore Dependencies
+      run: dotnet restore ProcMaster.csproj
+
+    - name: Build Project
+      run: dotnet build ProcMaster.csproj -c Release --no-restore
+
+    - name: Publish Executable
+      run: dotnet publish ProcMaster.csproj -c Release -r win-x64 --self-contained false -o publish/
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ProcMaster-win-x64
+        path: publish/
