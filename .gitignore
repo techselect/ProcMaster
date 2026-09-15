@@ -1,0 +1,26 @@
+## Build and output directories
+bin/
+obj/
+Publish/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio cache / temporary files
+.vs/
+.idea/
+*.swp
+*~
+
+## Logs
+*.log
+
+## OS Generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
