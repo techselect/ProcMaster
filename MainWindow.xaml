@@ -110,10 +110,13 @@
 
         <!-- Process Tree / DataGrid -->
         <Grid Grid.Row="1">
-            <!-- TreeView (Process Explorer hierarchy) -->
+            <!-- TreeView (Process Explorer hierarchy) with UI Virtualization -->
             <TreeView ItemsSource="{Binding ProcessTree}" 
                       Background="#1E1E1E" 
                       BorderThickness="0"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling"
+                      ScrollViewer.CanContentScroll="True"
                       SelectedItemChanged="OnTreeViewSelectedItemChanged">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">

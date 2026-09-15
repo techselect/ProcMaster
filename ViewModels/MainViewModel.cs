@@ -291,13 +291,50 @@ namespace ProcMaster.ViewModels
             }
         }
 
-        /// <summary>Synchronizes an ObservableCollection with a source list without discarding view state unnecessarily.</summary>
+        /// <summary>
+        /// Synchronizes an ObservableCollection in-place by ProcessId to avoid blowing away WPF visual trees,
+        /// eliminate tree flickering, preserve selection, and minimize UI thread layout recalculations.
+        /// </summary>
         private static void SyncCollection(ObservableCollection<ProcessItem> target, IList<ProcessItem> source)
         {
-            target.Clear();
-            foreach (var item in source)
+            var sourceDict = new HashSet<int>(source.Select(p => p.ProcessId));
+
+            // Remove items no longer in source
+            for (int i = target.Count - 1; i >= 0; i--)
             {
-                target.Add(item);
+                if (!sourceDict.Contains(target[i].ProcessId))
+                {
+                    target.RemoveAt(i);
+                }
+            }
+
+            // Insert or position items according to source order
+            for (int i = 0; i < source.Count; i++)
+            {
+                var sourceItem = source[i];
+                if (i < target.Count && target[i].ProcessId == sourceItem.ProcessId)
+                {
+                    continue; // Already at the correct position
+                }
+
+                int existingIndex = -1;
+                for (int j = i + 1; j < target.Count; j++)
+                {
+                    if (target[j].ProcessId == sourceItem.ProcessId)
+                    {
+                        existingIndex = j;
+                        break;
+                    }
+                }
+
+                if (existingIndex >= 0)
+                {
+                    target.Move(existingIndex, i);
+                }
+                else
+                {
+                    target.Insert(i, sourceItem);
+                }
             }
         }
 

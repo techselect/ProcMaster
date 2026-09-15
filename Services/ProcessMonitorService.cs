@@ -242,25 +242,33 @@ namespace ProcMaster.Services
         }
 
         /// <summary>
-        /// Queries WMI to map ProcessId to ParentProcessId across all existing processes.
+        /// Queries the Windows Toolhelp32 process snapshot API to rapidly map ProcessId to ParentProcessId
+        /// in sub-millisecond time, replacing slow WMI queries.
         /// </summary>
         private void RefreshParentPidMap()
         {
+            IntPtr hSnapshot = NativeMethods.CreateToolhelp32Snapshot(NativeMethods.TH32CS_SNAPPROCESS, 0);
+            if (hSnapshot == IntPtr.Zero || hSnapshot == (IntPtr)(-1)) return;
+
             try
             {
-                using var searcher = new ManagementObjectSearcher("SELECT ProcessId, ParentProcessId FROM Win32_Process");
-                using var collection = searcher.Get();
+                var entry = new NativeMethods.PROCESSENTRY32();
+                entry.dwSize = (uint)Marshal.SizeOf(typeof(NativeMethods.PROCESSENTRY32));
 
-                foreach (var item in collection)
+                if (NativeMethods.Process32First(hSnapshot, ref entry))
                 {
-                    int pid = Convert.ToInt32(item["ProcessId"]);
-                    int ppid = Convert.ToInt32(item["ParentProcessId"]);
-                    _parentPids[pid] = ppid;
+                    do
+                    {
+                        _parentPids[(int)entry.th32ProcessID] = (int)entry.th32ParentProcessID;
+                    } while (NativeMethods.Process32Next(hSnapshot, ref entry));
                 }
             }
             catch
             {
-                // WMI fallback
+            }
+            finally
+            {
+                NativeMethods.CloseHandle(hSnapshot);
             }
         }
 
@@ -273,18 +281,19 @@ namespace ProcMaster.Services
         public List<ProcessItem> BuildTree(List<ProcessItem> allItems)
         {
             var dict = allItems.ToDictionary(p => p.ProcessId, p => p);
+            var expectedChildren = new Dictionary<int, List<ProcessItem>>();
             var roots = new List<ProcessItem>();
-
-            foreach (var item in allItems)
-            {
-                item.Children.Clear();
-            }
 
             foreach (var item in allItems)
             {
                 if (item.ParentProcessId > 0 && dict.TryGetValue(item.ParentProcessId, out var parent) && parent.ProcessId != item.ProcessId)
                 {
-                    parent.Children.Add(item);
+                    if (!expectedChildren.TryGetValue(parent.ProcessId, out var childList))
+                    {
+                        childList = new List<ProcessItem>();
+                        expectedChildren[parent.ProcessId] = childList;
+                    }
+                    childList.Add(item);
                 }
                 else
                 {
@@ -292,7 +301,57 @@ namespace ProcMaster.Services
                 }
             }
 
+            // Sync children for each parent in-place
+            foreach (var item in allItems)
+            {
+                if (expectedChildren.TryGetValue(item.ProcessId, out var children))
+                {
+                    SyncChildren(item.Children, children);
+                }
+                else if (item.Children.Count > 0)
+                {
+                    item.Children.Clear();
+                }
+            }
+
             return roots.OrderBy(r => r.ProcessName).ToList();
+        }
+
+        private static void SyncChildren(System.Collections.ObjectModel.ObservableCollection<ProcessItem> target, List<ProcessItem> source)
+        {
+            var sourceDict = new HashSet<int>(source.Select(p => p.ProcessId));
+            for (int i = target.Count - 1; i >= 0; i--)
+            {
+                if (!sourceDict.Contains(target[i].ProcessId))
+                {
+                    target.RemoveAt(i);
+                }
+            }
+
+            for (int i = 0; i < source.Count; i++)
+            {
+                var src = source[i];
+                if (i < target.Count && target[i].ProcessId == src.ProcessId) continue;
+
+                int existingIdx = -1;
+                for (int j = i + 1; j < target.Count; j++)
+                {
+                    if (target[j].ProcessId == src.ProcessId)
+                    {
+                        existingIdx = j;
+                        break;
+                    }
+                }
+
+                if (existingIdx >= 0)
+                {
+                    target.Move(existingIdx, i);
+                }
+                else
+                {
+                    target.Insert(i, src);
+                }
+            }
         }
 
         /// <summary>
