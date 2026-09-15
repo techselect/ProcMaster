@@ -108,15 +108,50 @@
             </DockPanel>
         </Border>
 
-        <!-- Process Tree / DataGrid -->
+        <!-- Process Tree Area -->
         <Grid Grid.Row="1">
-            <!-- TreeView (Process Explorer hierarchy) with UI Virtualization -->
-            <TreeView ItemsSource="{Binding ProcessTree}" 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Column Headers -->
+                <RowDefinition Height="*"/>    <!-- Virtualized TreeView -->
+            </Grid.RowDefinitions>
+
+            <!-- Column Header Bar matching Process Explorer / Task Manager -->
+            <Border Grid.Row="0" Background="#2D2D30" BorderBrush="#3E3E42" BorderThickness="0,0,0,1" Padding="6,4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="280"/> <!-- Process -->
+                        <ColumnDefinition Width="70"/>  <!-- PID -->
+                        <ColumnDefinition Width="80"/>  <!-- CPU -->
+                        <ColumnDefinition Width="100"/> <!-- Private Bytes -->
+                        <ColumnDefinition Width="100"/> <!-- Working Set -->
+                        <ColumnDefinition Width="70"/>  <!-- Threads -->
+                        <ColumnDefinition Width="80"/>  <!-- Handles -->
+                        <ColumnDefinition Width="100"/> <!-- Architecture -->
+                        <ColumnDefinition Width="*"/>   <!-- Description -->
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Process" FontWeight="Bold" Foreground="#85B6FF"/>
+                    <TextBlock Grid.Column="1" Text="PID" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="2" Text="CPU" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="3" Text="Private Bytes" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="4" Text="Working Set" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="5" Text="Threads" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="6" Text="Handles" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,0,10,0" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="7" Text="Arch" FontWeight="Bold" HorizontalAlignment="Center" Foreground="#AAA"/>
+                    <TextBlock Grid.Column="8" Text="Description" FontWeight="Bold" Margin="10,0,0,0" Foreground="#AAA"/>
+                </Grid>
+            </Border>
+
+            <!-- TreeView (Process Explorer hierarchy) with UI Virtualization and Disabled Horizontal Scrollbar -->
+            <TreeView Grid.Row="1"
+                      ItemsSource="{Binding ProcessTree}" 
                       Background="#1E1E1E" 
                       BorderThickness="0"
                       VirtualizingStackPanel.IsVirtualizing="True"
                       VirtualizingStackPanel.VirtualizationMode="Recycling"
                       ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      HorizontalContentAlignment="Stretch"
                       SelectedItemChanged="OnTreeViewSelectedItemChanged">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
@@ -124,6 +159,7 @@
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         <Setter Property="Background" Value="{Binding HighlightColor}" />
                         <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                         <Setter Property="Padding" Value="2,1"/>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
@@ -135,7 +171,7 @@
                 </TreeView.ItemContainerStyle>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <Grid Margin="0,2">
+                        <Grid Margin="0,2" HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="280"/> <!-- Name & Icon -->
                                 <ColumnDefinition Width="70"/>  <!-- PID -->
@@ -144,7 +180,7 @@
                                 <ColumnDefinition Width="100"/> <!-- Working Set -->
                                 <ColumnDefinition Width="70"/>  <!-- Threads -->
                                 <ColumnDefinition Width="80"/>  <!-- Handles -->
-                                <ColumnDefinition Width="110"/> <!-- Architecture -->
+                                <ColumnDefinition Width="100"/> <!-- Architecture -->
                                 <ColumnDefinition Width="*"/>   <!-- Description -->
                             </Grid.ColumnDefinitions>
 
